@@ -28,33 +28,54 @@ def get_scale(series, is_y=False, steps=20):
     return scaled_series
 
 
-def _plot_scatter(xs, ys, size, pch, colour, title, cs, txt_align, x_title, y_title):
+def _plot_scatter(xs, ys, size, pch, colour, title, cs, txt_align, x_title, y_title, show_axes):
     plotted = set()
     scale = len(get_scale(xs, False, size))
     x_title, y_title = "x: " + x_title, "y: " + y_title
+    x_y, xp_yp = [], []
+    crosses_x_axis, crosses_y_axis = max(xs) > 0 > min(xs), max(ys) > 0 > min(ys)
 
     if title:
         print(box_text(title, 2 * (scale + 1), txt_align))
 
     print(y_title)
     print("+" + "-" * (2 * scale + 2) + "+")
-    for y in get_scale(ys, True, size) :
+    for y in get_scale(ys, True, size):
         print("|", end=' ')
         for x in get_scale(xs, False, size):
             point = " "
             for (i, (xp, yp)) in enumerate(zip(xs, ys)):
+                xp_yp.append((xp, yp))
+                x_y.append((x, y))
                 if xp <= x and yp >= y and (xp, yp) not in plotted:
                     point = pch
                     plotted.add((xp, yp))
+                    if cs:
+                        colour = cs[i]
+                elif show_axes and y == x == 0 and (x, y) not in plotted and crosses_x_axis and crosses_y_axis :
+                    point = "0"
+                    plotted.add((x, y))
+                    if cs:
+                        colour = cs[i]
+                elif show_axes and y == 0 and (x, y) not in plotted and crosses_y_axis:
+                    point = "-"
+                    plotted.add((x, y))
+                    if cs:
+                        colour = cs[i]
+                elif show_axes and x == 0 and (x, y) not in plotted and crosses_x_axis:
+                    point = "|"
+                    plotted.add((x, y))
                     if cs:
                         colour = cs[i]
             printcolour(point + " ", True, colour)
         print(" |")
     print("+" + "-" * (2 * scale + 2) + "+")
     print(x_title.rjust((scale + 2) * 2))
+    print(xp_yp)
+    print(x_y)
 
 
-def plot_scatter(f, xs, ys, size, pch, colour, title, x_title="My x axis", y_title="My y axis", txt_align="center"):
+def plot_scatter(f, xs, ys, size, pch, colour, title, x_title="My x axis", y_title="My y axis", txt_align="center", show_axes=False):
     """
     Form a complex number.
 
@@ -89,12 +110,10 @@ def plot_scatter(f, xs, ys, size, pch, colour, title, x_title="My x axis", y_tit
         with open(ys) as fh:
             ys = [float(str(row).strip()) for row in fh]
 
-    _plot_scatter(xs, ys, size, pch, colour, title, cs, txt_align, x_title, y_title)
+    _plot_scatter(xs, ys, size, pch, colour, title, cs, txt_align, x_title, y_title, show_axes)
     
 
-
 def main():
-
     parser = optparse.OptionParser(usage=scatter['usage'])
 
     parser.add_option('-f', '--file', help='a csv w/ x and y coordinates', default=None, dest='f')
@@ -105,10 +124,11 @@ def main():
     parser.add_option('-p', '--pch', help='shape of point', default="x", dest='pch')
     parser.add_option('-c', '--colour', help='colour of the plot (%s)' %
                       colour_help, default='default', dest='colour')
-    parser.add_option('-a', '--align', help='title alignment left, right \
-                                           or center as strings', defaul="center", dest='alg')
     parser.add_option('-xt', '--x_title', help="x axis title", default="My x axis", dest="xt")
     parser.add_option('-yt', '--y_title', help="y axis title", default="My y axis", dest="yt")
+    parser.add_option('-a', '--align', help='title alignment left, right \
+                                           or center as strings', defaul="center", dest='alg')
+    parser.add_option('h', '--axes', help='show 0-axes if values cross', default=False, dest="axs")
 
     opts, args = parser.parse_args()
 
@@ -116,7 +136,7 @@ def main():
         opts.f = sys.stdin.readlines()
 
     if opts.f or (opts.x and opts.y):
-        plot_scatter(opts.f, opts.x, opts.y, opts.size, opts.pch, opts.colour, opts.t, opts.alg, opts.xt, opts.yt)
+        plot_scatter(opts.f, opts.x, opts.y, opts.size, opts.pch, opts.colour, opts.t, opts.xt, opts.yt, opts.alg, opts.axs)
     else:
         print("nothing to plot!")
 

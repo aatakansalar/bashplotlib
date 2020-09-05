@@ -2,7 +2,7 @@
 from bashplotlib.scatterplot import plot_scatter
 
 x_coords = [-10,20,30]
-y_coords = [-10,20,30]
+y_coords = [50,20,30]
 width = 10
 char = 'x'
 color = 'default'
@@ -23,3 +23,4 @@ plot_scatter(
     y_axis,
     align
 )
+
