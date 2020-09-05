@@ -8,6 +8,8 @@ char = 'x'
 color = 'default'
 title = 'My Test GraphGraphGraphGraph'
 align = 'center'
+x_axis = 'x axis placeholder'
+y_axis = 'y axis placeholder'
 
 plot_scatter(
     None,
@@ -17,4 +19,7 @@ plot_scatter(
     char,
     color,
     title,
-    align)
+    x_axis,
+    y_axis,
+    align
+)
