@@ -28,51 +28,38 @@ def get_scale(series, is_y=False, steps=20):
     return scaled_series
 
 
-def _plot_scatter(xs, ys, size, pch, colour, title, cs, txt_align, x_title, y_title, show_axes):
+def _plot_scatter(xs, ys, size, pch, title, cs, txt_align, x_title, y_title, show_axes):
     plotted = set()
     scale = len(get_scale(xs, False, size))
     x_title, y_title = "x: " + x_title, "y: " + y_title
-    x_y, xp_yp = [], []
     crosses_x_axis, crosses_y_axis = max(xs) > 0 > min(xs), max(ys) > 0 > min(ys)
+    graph = ""
 
     if title:
-        print(box_text(title, 2 * (scale + 1), txt_align))
+        graph += box_text(title, 2 * (scale + 1), txt_align) + "\n"
 
-    print(y_title)
-    print("+" + "-" * (2 * scale + 2) + "+")
+    graph += y_title + "\n" + ("+" + "-" * (2 * scale + 2) + "+\n")
     for y in get_scale(ys, True, size):
-        print("|", end=' ')
+        graph += "| "
         for x in get_scale(xs, False, size):
             point = " "
             for (i, (xp, yp)) in enumerate(zip(xs, ys)):
-                xp_yp.append((xp, yp))
-                x_y.append((x, y))
                 if xp <= x and yp >= y and (xp, yp) not in plotted:
                     point = pch
                     plotted.add((xp, yp))
-                    if cs:
-                        colour = cs[i]
                 elif show_axes and y == x == 0 and (x, y) not in plotted and crosses_x_axis and crosses_y_axis :
                     point = "0"
                     plotted.add((x, y))
-                    if cs:
-                        colour = cs[i]
                 elif show_axes and y == 0 and (x, y) not in plotted and crosses_y_axis:
                     point = "-"
                     plotted.add((x, y))
-                    if cs:
-                        colour = cs[i]
                 elif show_axes and x == 0 and (x, y) not in plotted and crosses_x_axis:
                     point = "|"
                     plotted.add((x, y))
-                    if cs:
-                        colour = cs[i]
-            printcolour(point + " ", True, colour)
-        print(" |")
-    print("+" + "-" * (2 * scale + 2) + "+")
-    print(x_title.rjust((scale + 2) * 2))
-    print(xp_yp)
-    print(x_y)
+            graph += point + " "
+        graph += " |\n"
+    graph += "+" + "-" * (2 * scale + 2) + "+\n" + x_title.rjust((scale + 2) * 2)
+    return graph
 
 
 def plot_scatter(f, xs, ys, size, pch, colour, title, x_title="My x axis", y_title="My y axis", txt_align="center", show_axes=False):
@@ -110,7 +97,8 @@ def plot_scatter(f, xs, ys, size, pch, colour, title, x_title="My x axis", y_tit
         with open(ys) as fh:
             ys = [float(str(row).strip()) for row in fh]
 
-    _plot_scatter(xs, ys, size, pch, colour, title, cs, txt_align, x_title, y_title, show_axes)
+    graph = _plot_scatter(xs, ys, size, pch, title, cs, txt_align, x_title, y_title, show_axes)
+    printcolour(graph, False, colour)
     
 
 def main():

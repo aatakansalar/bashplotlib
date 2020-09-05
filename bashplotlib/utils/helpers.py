@@ -33,7 +33,7 @@ def get_colour(colour):
     return bcolours.get(colour, bcolours['ENDC'])
 
 
-def printcolour(text, sameline=False, colour=get_colour("ENDC")):
+def printcolour(text, sameline=False, colour=get_colour("ENDC"), ):
     """
     Print color text using escape codes
     """

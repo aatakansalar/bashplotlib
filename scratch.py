@@ -2,10 +2,10 @@
 from bashplotlib.scatterplot import plot_scatter
 
 x_coords = [-10,20,30]
-y_coords = [50,20,30]
+y_coords = [-10,20,30]
 width = 10
 char = 'x'
-color = 'default'
+color = 'pink'
 title = 'My Test GraphGraphGraphGraph'
 align = 'center'
 x_axis = 'x axis placeholder'
@@ -21,6 +21,7 @@ plot_scatter(
     title,
     x_axis,
     y_axis,
-    align
+    align,
+    True
 )
 
