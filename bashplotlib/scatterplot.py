@@ -28,7 +28,7 @@ def get_scale(series, is_y=False, steps=20):
     return scaled_series
 
 
-def _plot_scatter(xs, ys, size, pch, title, cs, txt_align, x_title, y_title, show_axes):
+def _plot_scatter(xs, ys, size, pch, title, x_title, y_title, txt_align, show_axes):
     plotted = set()
     scale = len(get_scale(xs, False, size))
     x_title, y_title = "x: " + x_title, "y: " + y_title
@@ -36,7 +36,7 @@ def _plot_scatter(xs, ys, size, pch, title, cs, txt_align, x_title, y_title, sho
     graph = ""
 
     if title:
-        graph += box_text(title, 2 * (scale + 1), txt_align) + "\n"
+        graph += box_text([title], 2 * (scale + 1), 1, txt_align) + "\n"
 
     graph += y_title + "\n" + ("+" + "-" * (2 * scale + 2) + "+\n")
     for y in get_scale(ys, True, size):
@@ -97,7 +97,7 @@ def plot_scatter(f, xs, ys, size, pch, colour, title, x_title="My x axis", y_tit
         with open(ys) as fh:
             ys = [float(str(row).strip()) for row in fh]
 
-    graph = _plot_scatter(xs, ys, size, pch, title, cs, txt_align, x_title, y_title, show_axes)
+    graph = _plot_scatter(xs, ys, size, pch, title, x_title, y_title, txt_align, show_axes)
     printcolour(graph, False, colour)
     
 
