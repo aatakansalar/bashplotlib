@@ -76,18 +76,23 @@ def abbreviate(labels, rfill=' '):
     return abbrev
 
 
-def box_text(text, width, txt_align, offset=0):
+def box_text(text:list, width, list_num, txt_align="center", offset=0):
     """
     Return text inside an ascii textbox
     """
-    text = text[:width - 7]+"..." if len(text) > width else text
-    if txt_align == "right":
-        text = text.rjust(width)
-    elif txt_align == "left":
-        text = text.ljust(width)
-    else:
-        text = text.center(width)
     box = " " * offset + "+" + "-" * width + "+" + "\n"
-    box += " " * offset + "|" + text + "|" + "\n"
-    box += " " * offset + "+" + "-" * width + "+"
+    for i in range(0, len(text)):
+        text[i] = text[i][:width - 7]+"..." if len(text[i]) > width else text[i]
+
+        if txt_align == "right":
+            text[i] = text[i].rjust(width)
+        elif txt_align == "left":
+            text[i] = text[i].ljust(width)
+        else:
+            text[i] = text[i].center(width)
+        box += " " * offset + "|" + text[i] + "|\n"
+        if list_num > 1:
+            box += " " * offset + "|" + "-" * width + "|\n"
+            list_num -= 1
+    box += " " * offset + "+" + "-" * width + "+\n"
     return box
